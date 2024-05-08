@@ -21,14 +21,11 @@ export const createNewPost = async (req,res) => {
         } = req.body
 
 
-        const imgUrls = req.files.map(file => file.path); // Get array of uploaded image URLs
-
-
         const newPost = new Post({
             postedBy,
             adminProfilePic,
             text,
-            img: imgUrls,
+            img,
             likes,
             comment,
             replies 
@@ -64,7 +61,7 @@ export const getAllUsers = async (req,res) => {
 export const getSingleUser = async (req,res) => {
     try {
         const userId = req.params.userId;
-        const singleUser = await User.findbyId(userId);
+        const singleUser = await User.findById(userId);
 
         if(!singleUser) {
             res.status(400).json({message:`no user found with such id:${userId} found`})    

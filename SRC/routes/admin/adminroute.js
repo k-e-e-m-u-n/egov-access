@@ -5,7 +5,7 @@ import protectRoute from '../../midddlewares/protectedApps.js';
 
 const router = express.Router();
 
-// router.get("/",getAllUsers)
+router.get("/getUsers",getAllUsers)
 router.get("/:id",getSingleUser)
 router.get("/delete",deleteAllUsers)
 router.get("/delete/:id",deleteSingleUser)
