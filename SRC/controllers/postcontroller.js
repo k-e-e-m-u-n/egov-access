@@ -78,7 +78,7 @@ export const deletePost = async (req,res) => {
 
         await Post.findByIdAndDelete(postId)
     } catch (error) {
-        
+        res.status(404).json({message: 'Error deleting post'})
     }
 }
 

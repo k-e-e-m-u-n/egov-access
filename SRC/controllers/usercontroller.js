@@ -21,7 +21,7 @@ export const getAllUsers = async (req,res) => {
 export const getSingleUser = async (req,res) => {
     try {
         const userId = req.params.userId;
-        const singleUser = await User.findbyId(userId);
+        const singleUser = await User.findById(userId);
 
         
         if(!singleUser) {
