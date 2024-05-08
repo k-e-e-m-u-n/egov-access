@@ -1,6 +1,6 @@
 // calling all dependencies
 import Express  from "express"
-import cors from "cors"
+//import cors from "cors"
 import dotenv from "dotenv"
 import bodyParser from "body-parser"
 import connectDB from './SRC/DB/database.js'
@@ -15,7 +15,7 @@ const app = Express()
 
 
 //using the express functions
-app.use(cors({origin: "*"}))
+//app.use(cors({origin: "*"}))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use('/egov', router)
