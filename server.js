@@ -1,5 +1,5 @@
 // calling all dependencies
-import Express  from "express"
+import express  from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 import bodyParser from "body-parser"
@@ -10,7 +10,7 @@ import router from "./SRC/routes/index.js"
 dotenv.config()
 
 //assigning the express method to a variable
-const app = Express()
+const app = express()
 
 
 
