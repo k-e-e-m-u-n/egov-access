@@ -15,7 +15,25 @@ const app = Express()
 
 
 //using the express functions
-app.use(cors({origin: "http://127.0.0.1:5503"}))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+
+app.use((req, res, next) => {
+  // Set headers to allow requests from any origin
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Allow specific methods
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  // Allow specific headers
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Continue to the next middleware
+  next();
+});
+
+
+//app.use(cors({origin: "http://127.0.0.1:5503"}))
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use('/egov', router)
