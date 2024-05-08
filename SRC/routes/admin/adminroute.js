@@ -15,7 +15,7 @@ router.post("/register",signUp);
 router.post("/login",logIn);
 router.post('/newpost',createNewPost);
 
-router.get('/',getAllPost);
+router.get('/getallpost',getAllPost);
 router.get('/:id',getSinglePost);
 router.patch('/update/:id',updatePost);
 router.delete('/delete/:id',deletePost)
