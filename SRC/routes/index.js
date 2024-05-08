@@ -11,8 +11,8 @@ const router = express.Router();
 
 router.use('/auth',authroute);
 router.use('/user',userroute);
-router.use('/admin', adminroute)
-router.use('/post',postroute)
+router.use('/admin', adminroute); //admin route for access to post controllers
+router.use('/post',postroute);
 
 
 
