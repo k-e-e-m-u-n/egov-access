@@ -247,7 +247,7 @@ export const logout = async ( req, res ,next) => {
 }
 
 // post controller
-export const getAllPost = async (res,req) => {
+export const getAllPost = async (req,res) => {
     try {
         const posts = await Post.find();
         res.json(posts);
@@ -256,7 +256,7 @@ export const getAllPost = async (res,req) => {
     }
 }
 
-export const getSinglePost = async (res,req) => {
+export const getSinglePost = async (req,res) => {
     try {
         const postId = req.params.id
 
@@ -267,7 +267,7 @@ export const getSinglePost = async (res,req) => {
     }
 }
 
-export const updatePost = async (res,req) => {
+export const updatePost = async (req,res) => {
     try {
         const postId = req.params.id
         const postToUpdate = await Post.findById(postId);
@@ -284,7 +284,7 @@ export const updatePost = async (res,req) => {
     }
 }
 
-export const deletePost = async (res,req) => {
+export const deletePost = async (req,res) => {
     try {
         const postId = req.params.id;
 
