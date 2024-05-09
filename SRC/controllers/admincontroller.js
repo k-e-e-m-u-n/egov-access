@@ -230,6 +230,11 @@ export const logIn = async (req, res, next) => {
                 (loginResults.error.issues)
             )
         }
+
+        if (email !== admin.email) {
+            return res.status(400).json({ message: 'Invalid email' });
+        }
+
            const comparePass = comparePasswords(password,admin.password);
 
         if(!comparePass) {
