@@ -23,7 +23,7 @@ const postSchema = mongoose.Schema({
     likes: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "User",
-        default: []
+        default: [5]
     },
     views: {
       type : Number,

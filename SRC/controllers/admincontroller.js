@@ -296,3 +296,19 @@ export const deletePost = async (req,res) => {
         
     }
 }
+
+export const deleteAllPosts = async ( req, res) => {
+    try {
+        const allPosts = await Post.deleteMany();
+
+        if(!allPosts) {
+            res.status(400).json({message: 'no Post found in database'})
+        } else {
+            res.status(200).json({message: 'Post found successfully', allPosts})
+        }
+
+    } catch(error) {
+        res.status(500).json({message: error.message})
+        console.error(error);
+    }
+}

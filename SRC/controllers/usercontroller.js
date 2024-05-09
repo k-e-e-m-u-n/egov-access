@@ -1,5 +1,6 @@
 import User from "../models/user.models.js"
 import cryptoHash from 'crypto'
+import {signUpValidator,logInValidator} from '../validators/auth.validator.js';
 
 export const getAllUsers = async (req,res) => {
     try {
@@ -75,3 +76,6 @@ export const updateUser = async (req, res) => {
     res.status(400).json({ message: error.message});
 }
 };
+
+
+
