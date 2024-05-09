@@ -27,7 +27,7 @@ const postSchema = mongoose.Schema({
     },
     views: {
       type : Number,
-      default : 0
+      default : 50
     },
     comment: [
         {
@@ -77,6 +77,9 @@ const postSchema = mongoose.Schema({
           },
         },
       ],
+      createdAt: {
+        type: String
+    }
 },
 {
     timestamp: Date

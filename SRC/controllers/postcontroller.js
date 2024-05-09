@@ -12,7 +12,8 @@ export const createNewPost = async (req,res) => {
             img,
             likes,
             comment,
-            replies 
+            replies,
+            createdAt
         } = req.body
 
 
@@ -23,7 +24,8 @@ export const createNewPost = async (req,res) => {
             img,
             likes,
             comment,
-            replies 
+            replies,
+            createdAt 
         });
 
 
