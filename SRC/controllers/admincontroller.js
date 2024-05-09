@@ -249,7 +249,7 @@ export const logout = async ( req, res ,next) => {
 // post controller
 export const getAllPost = async (req,res) => {
     try {
-        const posts = await Post.find();
+        const posts = await Post.find().populate('postedBy','name');
         res.json(posts);
     } catch (error) {
         res.status(404).json({message: 'No post found'});
