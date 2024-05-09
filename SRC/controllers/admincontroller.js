@@ -250,7 +250,22 @@ export const logout = async ( req, res ,next) => {
 export const getAllPost = async (req,res) => {
     try {
         const posts = await Post.find().populate('postedBy','name');
-        res.json(posts);
+
+        const formattedPosts = posts.map(post => ({
+            _id: post._id,
+            text: post.text,
+            postedBy: post.postedBy.name,
+            adminProfilePic: posts.adminProfilePic,
+            img: posts.img,
+            likes : posts.likes,
+            comment: posts.comment,
+            replies : posts.replies 
+        
+        }));
+
+        res.json(formattedPosts);
+
+        // res.json(posts);
     } catch (error) {
         res.status(404).json({message: 'No post found'});
     }
