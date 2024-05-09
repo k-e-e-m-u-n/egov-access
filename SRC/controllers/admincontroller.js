@@ -251,14 +251,6 @@ export const getAllPost = async (req,res) => {
     try {
         const posts = await Post.find().populate('postedBy','name');
 
-        const formattedPosts = posts.map(post => ({
-
-            postedBy: post.postedBy.name,
-        
-        }));
-
-        res.json(formattedPosts);
-
         res.json(posts);
     } catch (error) {
         res.status(404).json({message: 'No post found'});
