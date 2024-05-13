@@ -48,16 +48,16 @@ export const createComment = async (req,res) => {
     try {
 
         const {
-            postedBy,
-            userProfilePic,
+            // postedBy,
+            // userProfilePic,
             text,
             name
         } = req.body
 
 
         const newComment = new Comment({
-            postedBy,
-            userProfilePic,
+            // postedBy,
+            // userProfilePic,
             text,
             name
         });

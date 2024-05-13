@@ -15,7 +15,7 @@ router.post("/register",signUp);
 router.post("/login",logIn);
 router.post('/newpost',createNewPost);
 
-router.put("/newcomment",createComment)
+router.post("/newcomment",createComment)
 
 router.get('/',getAllPost);
 router.get('/:id',getSinglePost); 
