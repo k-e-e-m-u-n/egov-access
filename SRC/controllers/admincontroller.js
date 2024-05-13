@@ -1,5 +1,6 @@
 import Admin from '../models/admin.model.js'
 import User from '../models/user.models.js'
+import Comment from '../models/commentmodel.js';
 import Post from '../models/post.models.js' 
 import {signUpValidator,logInValidator} from '../validators/admin.validator.js';
 import { formatZodError } from '../utils/errorMessage.js';
@@ -39,6 +40,34 @@ export const createNewPost = async (req,res) => {
         res.status(201).json(newPost)
     } catch(error) {
          res.status(400).json({message: 'error creating post'})
+    }
+}
+
+
+export const createComment = async (req,res) => {
+    try {
+
+        const {
+            postedBy,
+            userProfilePic,
+            text,
+            name
+        } = req.body
+
+
+        const newComment = new Comment({
+            postedBy,
+            userProfilePic,
+            text,
+            name
+        });
+
+
+
+        await newComment.save();
+        res.status(201).json(newComment)
+    } catch(error) {
+         res.status(400).json({message: 'error creating comment'})
     }
 }
 
