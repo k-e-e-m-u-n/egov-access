@@ -437,3 +437,63 @@ export const getPostComments = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+// Reply functionality
+export const addReplyToPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { text, name } = req.body;
+        const userId = req.user?._id || req.body.userId;
+        const adminId = req.admin?._id || req.body.adminId;
+
+        if (!text || !name) {
+            return res.status(400).json({message: 'Text and name are required'});
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        const newReply = {
+            userId: userId || null,
+            adminId: adminId || null,
+            text,
+            name,
+            userProfilePic: req.body.userProfilePic || ''
+        };
+
+        post.replies.push(newReply);
+        await post.save();
+
+        res.status(201).json({
+            message: 'Reply added successfully',
+            reply: newReply,
+            totalReplies: post.replies.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const getPostReplies = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await Post.findById(postId)
+            .populate('replies.userId', 'name profilePic')
+            .populate('replies.adminId', 'name profilePic');
+
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        res.status(200).json({
+            message: 'Replies retrieved successfully',
+            replies: post.replies,
+            totalReplies: post.replies.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
