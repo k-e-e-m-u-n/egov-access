@@ -714,6 +714,218 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
+### Post Interaction Endpoints
+
+#### 26. Like/Unlike Post
+
+**Endpoint:** `POST /egov/admin/posts/:id/like`
+
+**Description:** Like or unlike a post (toggles like status)
+
+**Path Parameters:**
+
+- `id` (string): Post ID
+
+**Request Body:**
+
+```json
+{
+  "userId": "string (ObjectId, required if no auth user)"
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+  "message": "Post liked",
+  "likes": "number (total likes count)"
+}
+```
+
+**Or for unlike:**
+
+```json
+{
+  "message": "Post unliked",
+  "likes": "number (total likes count)"
+}
+```
+
+**Error Responses:**
+
+- `401`: User ID required
+- `404`: Post not found
+- `500`: Server error
+
+#### 27. Add Comment to Post
+
+**Endpoint:** `POST /egov/admin/posts/:id/comments`
+
+**Description:** Add a comment to a specific post
+
+**Path Parameters:**
+
+- `id` (string): Post ID
+
+**Request Body:**
+
+```json
+{
+  "text": "string (required)",
+  "name": "string (required)",
+  "userId": "string (ObjectId, optional)",
+  "adminId": "string (ObjectId, optional)",
+  "userProfilePic": "string (optional)"
+}
+```
+
+**Success Response (201):**
+
+```json
+{
+  "message": "Comment added successfully",
+  "comment": {
+    "userId": "string",
+    "adminId": "string",
+    "text": "string",
+    "name": "string",
+    "userProfilePic": "string"
+  },
+  "totalComments": "number"
+}
+```
+
+**Error Responses:**
+
+- `400`: Text and name are required
+- `404`: Post not found
+- `500`: Server error
+
+#### 28. Get Post Comments
+
+**Endpoint:** `GET /egov/admin/posts/:id/comments`
+
+**Description:** Retrieve all comments for a specific post
+
+**Path Parameters:**
+
+- `id` (string): Post ID
+
+**Success Response (200):**
+
+```json
+{
+  "message": "Comments retrieved successfully",
+  "comments": [
+    {
+      "userId": {
+        "name": "string",
+        "profilePic": "string"
+      },
+      "adminId": {
+        "name": "string",
+        "profilePic": "string"
+      },
+      "text": "string",
+      "name": "string",
+      "userProfilePic": "string",
+      "_id": "string"
+    }
+  ],
+  "totalComments": "number"
+}
+```
+
+**Error Responses:**
+
+- `404`: Post not found
+- `500`: Server error
+
+#### 29. Add Reply to Post
+
+**Endpoint:** `POST /egov/admin/posts/:id/replies`
+
+**Description:** Add a reply to a specific post
+
+**Path Parameters:**
+
+- `id` (string): Post ID
+
+**Request Body:**
+
+```json
+{
+  "text": "string (required)",
+  "name": "string (required)",
+  "userId": "string (ObjectId, optional)",
+  "adminId": "string (ObjectId, optional)",
+  "userProfilePic": "string (optional)"
+}
+```
+
+**Success Response (201):**
+
+```json
+{
+  "message": "Reply added successfully",
+  "reply": {
+    "userId": "string",
+    "adminId": "string",
+    "text": "string",
+    "name": "string",
+    "userProfilePic": "string"
+  },
+  "totalReplies": "number"
+}
+```
+
+**Error Responses:**
+
+- `400`: Text and name are required
+- `404`: Post not found
+- `500`: Server error
+
+#### 30. Get Post Replies
+
+**Endpoint:** `GET /egov/admin/posts/:id/replies`
+
+**Description:** Retrieve all replies for a specific post
+
+**Path Parameters:**
+
+- `id` (string): Post ID
+
+**Success Response (200):**
+
+```json
+{
+  "message": "Replies retrieved successfully",
+  "replies": [
+    {
+      "userId": {
+        "name": "string",
+        "profilePic": "string"
+      },
+      "adminId": {
+        "name": "string",
+        "profilePic": "string"
+      },
+      "text": "string",
+      "name": "string",
+      "userProfilePic": "string",
+      "_id": "string"
+    }
+  ],
+  "totalReplies": "number"
+}
+```
+
+**Error Responses:**
+
+- `404`: Post not found
+- `500`: Server error
+
 ## Data Models
 
 ### User Schema
@@ -763,20 +975,20 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
   "views": "number (default: 50)",
   "comment": [
     {
-      "userId": "ObjectId (ref: User, required)",
-      "adminId": "ObjectId (ref: Admin, required)",
+      "userId": "ObjectId (ref: User, optional)",
+      "adminId": "ObjectId (ref: Admin, optional)",
       "text": "string (required)",
       "userProfilePic": "string",
-      "name": "string"
+      "name": "string (required)"
     }
   ],
   "replies": [
     {
-      "userId": "ObjectId (ref: User, required)",
-      "adminId": "ObjectId (ref: Admin, required)",
+      "userId": "ObjectId (ref: User, optional)",
+      "adminId": "ObjectId (ref: Admin, optional)",
       "text": "string (required)",
       "userProfilePic": "string",
-      "name": "string"
+      "name": "string (required)"
     }
   ],
   "createdAt": "string"
