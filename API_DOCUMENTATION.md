@@ -12,7 +12,21 @@ eGov Access is an e-governance platform that provides APIs for user management, 
 
 ## Authentication
 
-The API uses SHA-256 password hashing for authentication. Tokens are generated using JWT (JSON Web Tokens).
+The API uses SHA-256 password hashing for authentication and email-based OTP verification. Tokens are generated using JWT (JSON Web Tokens).
+
+### Authentication Flow:
+
+1. **Registration**: User registers with email/password → Account created with `isVerified: false`
+2. **OTP Email**: System sends 4-digit OTP to user's email (expires in 10 minutes)
+3. **OTP Verification**: User verifies OTP → Account marked as verified + JWT token generated
+4. **Welcome Email**: System sends welcome email after successful verification
+5. **Login**: Verified users can login with email/password
+
+### Email Configuration:
+
+The system requires the following environment variables for email functionality:
+- `EMAIL_USER`: Gmail address for sending emails
+- `EMAIL_PASS`: Gmail app password for authentication
 
 ## API Endpoints
 
@@ -22,7 +36,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 
 **Endpoint:** `POST /egov/auth/register`
 
-**Description:** Register a new user account
+**Description:** Register a new user account and send OTP verification email
 
 **Request Body:**
 
@@ -50,6 +64,9 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
     "gender": "string",
     "profilePic": "string",
     "communities": [],
+    "isVerified": false,
+    "otp": "string (4 digits)",
+    "otpExpiry": "timestamp",
     "createdAt": "timestamp",
     "updatedAt": "timestamp"
   }
@@ -62,7 +79,53 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `403`: Password and confirmPassword do not match
 - `500`: Server error
 
-#### 2. User Login
+**Note:** After successful registration, an OTP is sent to the user's email address. The OTP expires in 10 minutes.
+
+#### 2. OTP Verification
+
+**Endpoint:** `POST /egov/auth/verifyOtp`
+
+**Description:** Verify the OTP sent to user's email during registration
+
+**Request Body:**
+
+```json
+{
+  "email": "string (required)",
+  "otp": "string (required, 4 digits)"
+}
+```
+
+**Success Response (200):**
+
+```json
+{
+  "message": "OTP verified successfully.",
+  "accessToken": "string (JWT token)",
+  "user": {
+    "_id": "string",
+    "name": "string",
+    "email": "string",
+    "phoneNumber": "string",
+    "gender": "string",
+    "profilePic": "string",
+    "communities": [],
+    "isVerified": true,
+    "createdAt": "timestamp",
+    "updatedAt": "timestamp"
+  }
+}
+```
+
+**Error Responses:**
+
+- `400`: Invalid or expired OTP
+- `404`: Invalid or expired OTP (user not found)
+- `500`: Server error
+
+**Note:** After successful OTP verification, the user account is marked as verified and a welcome email is sent.
+
+#### 3. User Login
 
 **Endpoint:** `POST /egov/auth/login`
 
@@ -103,7 +166,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 
 ### User Management Endpoints
 
-#### 3. Get All Users
+#### 4. Get All Users
 
 **Endpoint:** `GET /egov/user/`
 
@@ -135,7 +198,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `400`: No users found in database
 - `500`: Server error
 
-#### 4. Get Single User
+#### 5. Get Single User
 
 **Endpoint:** `GET /egov/user/:id`
 
@@ -171,13 +234,13 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `400`: No user found with such ID
 - `500`: Server error
 
-#### 5. User Registration (Alternative Route)
+#### 6. User Registration (Alternative Route)
 
 **Endpoint:** `POST /egov/user/register`
 
 **Description:** Alternative user registration endpoint (same as /egov/auth/register)
 
-#### 6. User Login (Alternative Route)
+#### 7. User Login (Alternative Route)
 
 **Endpoint:** `POST /egov/user/login`
 
@@ -185,7 +248,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 
 ### Post Management Endpoints
 
-#### 7. Create New Post
+#### 8. Create New Post
 
 **Endpoint:** `POST /egov/post/newpost`
 
@@ -248,7 +311,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 8. Get All Posts
+#### 9. Get All Posts
 
 **Endpoint:** `GET /egov/post/`
 
@@ -281,7 +344,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 9. Get Single Post
+#### 10. Get Single Post
 
 **Endpoint:** `GET /egov/post/:id`
 
@@ -316,7 +379,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 10. Update Post
+#### 11. Update Post
 
 **Endpoint:** `PATCH /egov/post/update/:id`
 
@@ -348,7 +411,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 
 - `404`: Post not found or Error updating post
 
-#### 11. Delete Post
+#### 12. Delete Post
 
 **Endpoint:** `DELETE /egov/post/delete/:id`
 
@@ -370,7 +433,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 
 ### Admin Endpoints
 
-#### 12. Admin Registration
+#### 13. Admin Registration
 
 **Endpoint:** `POST /egov/admin/register`
 
@@ -411,7 +474,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `403`: Password and confirmPassword do not match
 - `500`: Server error
 
-#### 13. Admin Login
+#### 14. Admin Login
 
 **Endpoint:** `POST /egov/admin/login`
 
@@ -449,7 +512,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `400`: Invalid email or password incorrect
 - `500`: Server error
 
-#### 14. Admin - Get All Users
+#### 15. Admin - Get All Users
 
 **Endpoint:** `GET /egov/admin/getUsers`
 
@@ -476,7 +539,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 15. Admin - Get Single User
+#### 16. Admin - Get Single User
 
 **Endpoint:** `GET /egov/admin/:id`
 
@@ -507,7 +570,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 16. Admin - Delete All Users
+#### 17. Admin - Delete All Users
 
 **Endpoint:** `GET /egov/admin/delete`
 
@@ -524,7 +587,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 17. Admin - Delete Single User
+#### 18. Admin - Delete Single User
 
 **Endpoint:** `GET /egov/admin/delete/:id`
 
@@ -547,7 +610,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 18. Admin - Update User
+#### 19. Admin - Update User
 
 **Endpoint:** `GET /egov/admin/update/:id`
 
@@ -586,13 +649,13 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 19. Admin - Create New Post
+#### 20. Admin - Create New Post
 
 **Endpoint:** `POST /egov/admin/newpost`
 
 **Description:** Admin endpoint to create posts (same functionality as regular post creation)
 
-#### 20. Admin - Create Comment
+#### 21. Admin - Create Comment
 
 **Endpoint:** `POST /egov/admin/newcomment`
 
@@ -622,7 +685,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 21. Admin - Get All Posts
+#### 22. Admin - Get All Posts
 
 **Endpoint:** `GET /egov/admin/`
 
@@ -648,7 +711,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 ]
 ```
 
-#### 22. Admin - Get Single Post
+#### 23. Admin - Get Single Post
 
 **Endpoint:** `GET /egov/admin/:id`
 
@@ -685,19 +748,19 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 }
 ```
 
-#### 23. Admin - Update Post
+#### 24. Admin - Update Post
 
 **Endpoint:** `PATCH /egov/admin/update/:id`
 
 **Description:** Admin endpoint to update posts
 
-#### 24. Admin - Delete Post
+#### 25. Admin - Delete Post
 
 **Endpoint:** `DELETE /egov/admin/delete/:id`
 
 **Description:** Admin endpoint to delete a specific post
 
-#### 25. Admin - Delete All Posts
+#### 26. Admin - Delete All Posts
 
 **Endpoint:** `DELETE /egov/admin/deleteAllPosts`
 
@@ -716,7 +779,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 
 ### Post Interaction Endpoints
 
-#### 26. Like/Unlike Post
+#### 27. Like/Unlike Post
 
 **Endpoint:** `POST /egov/admin/posts/:id/like`
 
@@ -758,7 +821,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `404`: Post not found
 - `500`: Server error
 
-#### 27. Add Comment to Post
+#### 28. Add Comment to Post
 
 **Endpoint:** `POST /egov/admin/posts/:id/comments`
 
@@ -802,7 +865,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `404`: Post not found
 - `500`: Server error
 
-#### 28. Get Post Comments
+#### 29. Get Post Comments
 
 **Endpoint:** `GET /egov/admin/posts/:id/comments`
 
@@ -842,7 +905,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `404`: Post not found
 - `500`: Server error
 
-#### 29. Add Reply to Post
+#### 30. Add Reply to Post
 
 **Endpoint:** `POST /egov/admin/posts/:id/replies`
 
@@ -886,7 +949,7 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
 - `404`: Post not found
 - `500`: Server error
 
-#### 30. Get Post Replies
+#### 31. Get Post Replies
 
 **Endpoint:** `GET /egov/admin/posts/:id/replies`
 
@@ -941,6 +1004,10 @@ The API uses SHA-256 password hashing for authentication. Tokens are generated u
   "profilePic": "string (default: empty string)",
   "communities": "array of strings (default: empty array)",
   "gender": "string (enum: 'Male', 'Female', 'male', 'female')",
+  "otp": "string (4 digits, temporary during verification)",
+  "otpExpiry": "Date (OTP expiration timestamp)",
+  "isVerified": "boolean (default: false)",
+  "profilePhoto": "array of strings",
   "createdAt": "timestamp",
   "updatedAt": "timestamp"
 }
