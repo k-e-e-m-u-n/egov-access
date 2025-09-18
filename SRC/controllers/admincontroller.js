@@ -377,3 +377,63 @@ export const likePost = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+// Comment functionality
+export const addCommentToPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { text, name } = req.body;
+        const userId = req.user?._id || req.body.userId;
+        const adminId = req.admin?._id || req.body.adminId;
+
+        if (!text || !name) {
+            return res.status(400).json({message: 'Text and name are required'});
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        const newComment = {
+            userId: userId || null,
+            adminId: adminId || null,
+            text,
+            name,
+            userProfilePic: req.body.userProfilePic || ''
+        };
+
+        post.comment.push(newComment);
+        await post.save();
+
+        res.status(201).json({
+            message: 'Comment added successfully',
+            comment: newComment,
+            totalComments: post.comment.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const getPostComments = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await Post.findById(postId)
+            .populate('comment.userId', 'name profilePic')
+            .populate('comment.adminId', 'name profilePic');
+
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        res.status(200).json({
+            message: 'Comments retrieved successfully',
+            comments: post.comment,
+            totalComments: post.comment.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
