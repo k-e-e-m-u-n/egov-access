@@ -29,7 +29,7 @@ const postSchema = mongoose.Schema({
       type : Number ,
       default : 50
     },
-    comment: [
+    feedback: [
         {
             userId: {
                 type: mongoose.Schema.Types.ObjectId,
