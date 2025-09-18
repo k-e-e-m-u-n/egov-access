@@ -1,29 +1,27 @@
 import mongoose from "mongoose";
 
 
-const commentSchema = mongoose.Schema({
-    comment: [
+const feedbackSchema = mongoose.Schema({
+    feedback: [
         {
-            // postedBy: {
-            //     type: mongoose.Schema.Types.ObjectId,
-            //     ref : "Admin",
-            //     required: true
-            // },
+            postedBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref : "User",
+                required: true
+            },
           text: {
                 type: String,
                 required: true,
           },
-          // userProfilePic: {
-          //       type: String,
-          // },
-          name: {
+          userProfilePic: {
                 type: String,
           },
+        
         }
     ]
   })
   
   
-  const Comment = mongoose.model("Comment",commentSchema);
+  const Feedback= mongoose.model("Feedback",feedbackSchema);
   
-  export default Comment;
+  export default Feedback;

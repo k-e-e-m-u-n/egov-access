@@ -1,86 +1,79 @@
-import Post from '../models/post.models.js' 
-import express from 'express'
+import Post from "../models/post.models.js";
+import express from "express";
 
+export const createNewPost = async (req, res) => {
+  try {
+    const {
+      postedBy,
+      adminProfilePic,
+      text,
+      img,
+      likes,
+      feedback,
+      replies,
+      createdAt,
+    } = req.body;
 
+    const newPost = new Post({
+      postedBy,
+      adminProfilePic,
+      text,
+      img,
+      likes,
+      feedback,
+      replies,
+      createdAt,
+    });
 
-export const createNewPost = async (req,res) => {
-    try {
-        const {
-            postedBy,
-            adminProfilePic,
-            text,
-            img,
-            likes,
-            comment,
-            replies,
-            createdAt
-        } = req.body
+    await newPost.save();
+    res.status(201).json({ message: "Post succesfully created" }, newPost);
+  } catch (error) {
+    res.status(400).json({ message: "error creating post" });
+  }
+};
 
+export const getAllPost = async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.json(posts);
+  } catch (error) {
+    res.status(404).json({ message: "No post found" });
+  }
+};
 
-        const newPost = new Post({
-            postedBy,
-            adminProfilePic,
-            text,
-            img,
-            likes,
-            comment,
-            replies,
-            createdAt 
-        });
+export const getSinglePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
 
+    const singlePost = await Post.findId(postId);
+    res.json(singlePost);
+  } catch (error) {
+    res.status(404).json({ message: "Post not found" });
+  }
+};
 
+export const updatePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const postToUpdate = await Post.findById(postId);
 
-        await newPost.save();
-        res.status(201).json({message: 'Post succesfully created'},newPost)
-    } catch(error) {
-         res.status(400).json({message: 'error creating post'})
+    if (!postToUpdate) {
+      return res.status(404).json({ message: "Post not found" });
     }
-}
 
-export const getAllPost = async (req,res) => {
-    try {
-        const posts = await Post.find();
-        res.json(posts);
-    } catch (error) {
-        res.status(404).json({message: 'No post found'});
-    }
-}
+    await postToUpdate.updateOne(req.body);
+    res.json(postToUpdate);
+  } catch (error) {
+    res.status(404).json({ message: "Error updating post" });
+  }
+};
 
-export const getSinglePost = async (req,res) => {
-    try {
-        const postId = req.params.id
+export const deletePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
 
-        const singlePost = await Post.findId(postId)
-        res.json(singlePost)
-    } catch (error) {
-        res.status(404).json({message: 'Post not found'})
-    }
-}
-
-export const updatePost = async (req,res) => {
-    try {
-        const postId = req.params.id
-        const postToUpdate = await Post.findById(postId);
-        
-        if(!postToUpdate) {
-            return res.status(404).json({message: 'Post not found'})
-        }
-
-        await postToUpdate.updateOne(req.body);
-        res.json(postToUpdate)
-
-    } catch (error) {
-        res.status(404).json({message: 'Error updating post'})
-    }
-}
-
-export const deletePost = async (req,res) => {
-    try {
-        const postId = req.params.id;
-
-        await Post.findByIdAndDelete(postId)
-    } catch (error) {
-        res.status(404).json({message: 'Error deleting post'})
-    }
-}
-
+    await Post.findByIdAndDelete(postId);
+  } catch (error) {
+    res.status(404).json({ message: "Error deleting post" });
+  }
+};
