@@ -34,12 +34,12 @@ const postSchema = mongoose.Schema({
             userId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User",
-                required: true
+                required: false
             },
             adminId: {
               type: mongoose.Schema.Types.ObjectId,
               ref: "Admin",
-              required: true
+              required: false
           },
           text: {
                 type: String,
@@ -50,6 +50,7 @@ const postSchema = mongoose.Schema({
           },
           name: {
                 type: String,
+                required: true
           },
         }
     ],
@@ -58,12 +59,12 @@ const postSchema = mongoose.Schema({
           userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            required: false
           },
           adminId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Admin",
-            required: true
+            required: false
         },
           text: {
             type: String,
@@ -73,7 +74,8 @@ const postSchema = mongoose.Schema({
             type: String
           },
           name: {
-            type: String
+            type: String,
+            required: true
           },
         },
       ],

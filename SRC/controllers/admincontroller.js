@@ -346,3 +346,154 @@ export const deleteAllPosts = async ( req, res) => {
         console.error(error);
     }
 }
+
+// Like/Unlike functionality
+export const likePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user?._id || req.body.userId;
+
+        if (!userId) {
+            return res.status(401).json({message: 'User ID required'});
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        const isLiked = post.likes.includes(userId);
+
+        if (isLiked) {
+            post.likes = post.likes.filter(id => id.toString() !== userId.toString());
+            await post.save();
+            res.status(200).json({message: 'Post unliked', likes: post.likes.length});
+        } else {
+            post.likes.push(userId);
+            await post.save();
+            res.status(200).json({message: 'Post liked', likes: post.likes.length});
+        }
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+// Comment functionality
+export const addCommentToPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { text, name } = req.body;
+        const userId = req.user?._id || req.body.userId;
+        const adminId = req.admin?._id || req.body.adminId;
+
+        if (!text || !name) {
+            return res.status(400).json({message: 'Text and name are required'});
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        const newComment = {
+            userId: userId || null,
+            adminId: adminId || null,
+            text,
+            name,
+            userProfilePic: req.body.userProfilePic || ''
+        };
+
+        post.comment.push(newComment);
+        await post.save();
+
+        res.status(201).json({
+            message: 'Comment added successfully',
+            comment: newComment,
+            totalComments: post.comment.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const getPostComments = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await Post.findById(postId)
+            .populate('comment.userId', 'name profilePic')
+            .populate('comment.adminId', 'name profilePic');
+
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        res.status(200).json({
+            message: 'Comments retrieved successfully',
+            comments: post.comment,
+            totalComments: post.comment.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+// Reply functionality
+export const addReplyToPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const { text, name } = req.body;
+        const userId = req.user?._id || req.body.userId;
+        const adminId = req.admin?._id || req.body.adminId;
+
+        if (!text || !name) {
+            return res.status(400).json({message: 'Text and name are required'});
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        const newReply = {
+            userId: userId || null,
+            adminId: adminId || null,
+            text,
+            name,
+            userProfilePic: req.body.userProfilePic || ''
+        };
+
+        post.replies.push(newReply);
+        await post.save();
+
+        res.status(201).json({
+            message: 'Reply added successfully',
+            reply: newReply,
+            totalReplies: post.replies.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const getPostReplies = async (req, res) => {
+    try {
+        const postId = req.params.id;
+
+        const post = await Post.findById(postId)
+            .populate('replies.userId', 'name profilePic')
+            .populate('replies.adminId', 'name profilePic');
+
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        res.status(200).json({
+            message: 'Replies retrieved successfully',
+            replies: post.replies,
+            totalReplies: post.replies.length
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
