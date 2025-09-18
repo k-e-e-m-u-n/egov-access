@@ -1,6 +1,6 @@
 import express from 'express';
 import { signUp, logIn } from '../../controllers/admincontroller.js';
-import {createNewPost,createComment,deleteAllUsers,deleteSingleUser,getAllUsers,getSingleUser,updateUser,getAllPost,getSinglePost,updatePost,deletePost,deleteAllPosts} from '../../controllers/admincontroller.js';
+import {createNewPost,createComment,deleteAllUsers,deleteSingleUser,getAllUsers,getSingleUser,updateUser,getAllPost,getSinglePost,updatePost,deletePost,deleteAllPosts,likePost} from '../../controllers/admincontroller.js';
 import protectRoute from '../../midddlewares/protectedApps.js';
 
 const router = express.Router();
@@ -23,7 +23,9 @@ router.get('/:id',getSinglePost);
 
 router.patch('/update/:id',updatePost);
 router.delete('/delete/id',deletePost);
-router.delete('/deleteAllPosts',deleteAllPosts)
+router.delete('/deleteAllPosts',deleteAllPosts);
+
+router.post('/posts/:id/like',likePost);
 
 
 export default router;

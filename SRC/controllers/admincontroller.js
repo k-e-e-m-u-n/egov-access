@@ -346,3 +346,34 @@ export const deleteAllPosts = async ( req, res) => {
         console.error(error);
     }
 }
+
+// Like/Unlike functionality
+export const likePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user?._id || req.body.userId;
+
+        if (!userId) {
+            return res.status(401).json({message: 'User ID required'});
+        }
+
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({message: 'Post not found'});
+        }
+
+        const isLiked = post.likes.includes(userId);
+
+        if (isLiked) {
+            post.likes = post.likes.filter(id => id.toString() !== userId.toString());
+            await post.save();
+            res.status(200).json({message: 'Post unliked', likes: post.likes.length});
+        } else {
+            post.likes.push(userId);
+            await post.save();
+            res.status(200).json({message: 'Post liked', likes: post.likes.length});
+        }
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
