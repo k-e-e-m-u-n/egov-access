@@ -247,7 +247,7 @@ export const signUp = async (req, res, next ) => {
 export const logIn = async (req, res, next) => {
     const loginResults = logInValidator.safeParse(req.body)
 
-    if(!loginResults) {
+    if(!loginResults.success) {
         return res.status(400).json (formatZodError
             (loginResults.error.issues)
         )

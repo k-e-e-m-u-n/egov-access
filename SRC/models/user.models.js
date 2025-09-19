@@ -38,6 +38,10 @@ const userSchema = mongoose.Schema(
     },
     otp: String,
     otpExpiry: Date,
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
     profilePhoto: {
       type: [String],
     },

@@ -79,7 +79,7 @@ const sendNewMail = async (email, name, res) => {
 export const signUp = async (req, res, next) => {
   const registerResults = signUpValidator.safeParse(req.body); //safely parsing the validating the request againt the schema defined in our signupvalidator
 
-  if (!registerResults) {
+  if (!registerResults.success) {
     return res.status(400).json(formatZodError(registerResults.error.issues));
   }
   try {
@@ -196,7 +196,7 @@ export const verifyOtp = async (req, res) => {
 export const logIn = async (req, res, next) => {
   const loginResults = logInValidator.safeParse(req.body);
 
-  if (!loginResults) {
+  if (!loginResults.success) {
     return res.status(400).json(formatZodError(loginResults.error.issues));
   }
   try {
