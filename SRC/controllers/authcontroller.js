@@ -210,7 +210,7 @@ export const logIn = async (req, res, next) => {
     const comparePass = comparePasswords(password, user.password);
 
     if (!comparePass) {
-      res.status(400).json({ message: "Password is incorrect" });
+      return res.status(400).json({ message: "Password is incorrect" });
     }
     res.status(200).json({ message: "Login Successful", user });
   } catch (error) {
