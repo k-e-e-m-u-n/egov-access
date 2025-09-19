@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "Nenkemun Sophie Jonathan Goodness Deborah",
+  "author": "Nenkemun, Sophie, Goodness, Deborah",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
