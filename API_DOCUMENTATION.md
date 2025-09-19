@@ -444,9 +444,12 @@ The system requires the following environment variables for email functionality:
 ```json
 {
   "name": "string (required)",
-  "email": "string (required, unique)",
-  "password": "string (required, 8-12 characters with validation)",
-  "confirmPassword": "string (required, must match password)"
+  "email": "string (required, unique, 3-30 characters)",
+  "password": "string (required, 8-12 characters with uppercase, lowercase, number, and special character)",
+  "confirmPassword": "string (required, must match password)",
+  "phoneNumber": "string (required, 10-11 digits, unique)",
+  "occupation": "string (required)",
+  "gender": "string (required, enum: 'Male', 'Female', 'male', 'female')"
 }
 ```
 
@@ -454,14 +457,16 @@ The system requires the following environment variables for email functionality:
 
 ```json
 {
-  "message": "Admin resgistered succesfully",
+  "message": "Admin registered successfully",
   "newAdmin": {
     "_id": "string",
     "name": "string",
     "email": "string",
+    "phoneNumber": "string",
+    "occupation": "string",
+    "gender": "string",
     "profilePic": "string",
     "bio": "string",
-    "followers": [],
     "createdAt": "timestamp",
     "updatedAt": "timestamp"
   }
@@ -470,7 +475,7 @@ The system requires the following environment variables for email functionality:
 
 **Error Responses:**
 
-- `400`: Admin already exists
+- `400`: Admin already exists (by name, email, or phone number) or validation errors
 - `403`: Password and confirmPassword do not match
 - `500`: Server error
 
@@ -1021,9 +1026,11 @@ The system requires the following environment variables for email functionality:
   "name": "string (required)",
   "password": "string (required, hashed)",
   "email": "string (required, unique)",
+  "phoneNumber": "string (required, unique)",
+  "occupation": "string (required)",
+  "gender": "string (required, enum: 'Male', 'Female', 'male', 'female')",
   "profilePic": "string (default: empty string)",
   "bio": "string",
-  "followers": "array of strings (default: empty array)",
   "createdAt": "timestamp",
   "updatedAt": "timestamp"
 }
