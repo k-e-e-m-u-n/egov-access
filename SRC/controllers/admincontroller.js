@@ -299,7 +299,7 @@ export const getSinglePost = async (req,res) => {
     try {
         const postId = req.params.id
 
-        const singlePost = await Post.findId(postId)
+        const singlePost = await Post.findById(postId)
         res.json(singlePost)
     } catch (error) {
         res.status(404).json({message: 'Post not found'})

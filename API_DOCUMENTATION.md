@@ -55,7 +55,7 @@ The system requires the following environment variables for email functionality:
 
 ```json
 {
-  "message": "User resgistered succesfully",
+  "message": "User registered successfully",
   "newUser": {
     "_id": "string",
     "name": "string",

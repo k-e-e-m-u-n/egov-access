@@ -98,7 +98,7 @@ export const signUp = async (req, res, next) => {
       if (password !== confirmPassword) {
         return res
           .status(403)
-          .json({ message: "password and cornfirmPassword do not match" });
+          .json({ message: "password and confirmPassword do not match" });
       }
       const encryption = hashValue(password, confirmPassword); // encrypting the users password with the hash value function
       const otp = generateOTP();
@@ -119,7 +119,7 @@ export const signUp = async (req, res, next) => {
       await newUser.save(); //saving the new user
       res
         .status(200)
-        .json({ message: "User resgistered succesfully", newUser });
+        .json({ message: "User registered successfully", newUser });
       console.log("User registered succesfully", newUser);
 
       const transporter = nodemailer.createTransport({
@@ -169,7 +169,7 @@ export const verifyOtp = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ messaage: "Invalid or expired OTP" });
+      return res.status(404).json({ message: "Invalid or expired OTP" });
     }
 
     if (user.otp !== otp || user.otpExpiry < Date.now()) {
