@@ -197,47 +197,49 @@ function comparePasswords(inputPassword, hashedPassword) {
 // validating the user input for sign up
 export const signUp = async (req, res, next ) => {
 
-
     const registerResults = signUpValidator.safeParse(req.body) //safely parsing the validating the request againt the schema defined in our signupvalidator
 
-    if (!registerResults) { 
+    if (!registerResults.success) {
         return res.status(400).json(formatZodError(registerResults.error.issues) )
     }
     try {
-        const {name,email} = req.body;
+        const {name, email, phoneNumber} = req.body;
 
-        const admin = await Admin.findOne({$or:[{name},{email}]});
+        const admin = await Admin.findOne({$or:[{name},{email},{phoneNumber}]});
 
-            // admin
-            if(admin) {
-                res.status(400).json ({message:'Admin already exists'})
-            } else {
-                const {
-                    name,
-                    password,
-                    confirmPassword,
-                    email
-                } = req.body // request coming from the client
-    
-                if(password !== confirmPassword) {
-                    return res.status(403).json({message:'password and cornfirmPassword do not match'})
-                }
-                const encryption = hashValue(password,confirmPassword);
-                const newAdmin = new Admin ({
-                    name,
-                    password: encryption,
-                    email
-                })//creating a new admin
-    
-                await newAdmin.save(); //saving the new admin 
-                res.status(200).json({message:'Admin resgistered succesfully', newAdmin})
-                console.log('Admin registered succesfully',newAdmin);
-    
-    
+        if(admin) {
+            return res.status(400).json ({message:'Admin already exists'})
+        } else {
+            const {
+                name,
+                password,
+                confirmPassword,
+                email,
+                phoneNumber,
+                occupation,
+                gender
+            } = req.body // request coming from the client
+
+            if(password !== confirmPassword) {
+                return res.status(403).json({message:'password and confirmPassword do not match'})
             }
-     
-        } catch (error){
-      res.status(500).json({message: error.message})  
+            const encryption = hashValue(password);
+            const newAdmin = new Admin ({
+                name,
+                password: encryption,
+                email,
+                phoneNumber,
+                occupation,
+                gender
+            })//creating a new admin
+
+            await newAdmin.save(); //saving the new admin
+            res.status(200).json({message:'Admin registered successfully', newAdmin})
+            console.log('Admin registered successfully',newAdmin);
+        }
+
+    } catch (error){
+      res.status(500).json({message: error.message})
       console.log(error.message);
     }
 }

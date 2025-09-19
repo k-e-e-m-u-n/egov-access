@@ -10,7 +10,10 @@ export const signUpValidator = z.object ({
             message: 'Password should contain at least one uppercase letter, one lowercase letter, one number, and one special character',
           }),
     confirmPassword: z.string(),
-    email: z.string().min(3).max(30)
+    email: z.string().min(3).max(30),
+    phoneNumber: z.string().min(10, {message: 'Phone number should be at least 10 digits'}).max(11, {message: 'Phone number should not exceed 11 digits'}),
+    occupation: z.string().min(1, {message: 'Occupation is required'}),
+    gender: z.enum(['Male', 'Female', 'male', 'female'], {message: 'Gender must be Male, Female, male, or female'})
 }).required({message: 'Please enter all the required fields'})
 
 export const logInValidator = z.object ({
